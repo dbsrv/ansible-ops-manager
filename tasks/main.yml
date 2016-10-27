@@ -1,0 +1,23 @@
+---
+
+- name: Install MongoDB pt.1 - create repo file
+  copy: src=mongodb-org-3.2.repo dest=/etc/yum.repos.d/mongodb-org-3.2.repo
+
+- name: Install MongoDB pt.2 - install MongoDB packages
+  yum: name=mongodb-org state=present
+
+- name: Start MongoDB
+  service: name=mongod state=started
+
+- name: Ensure MongoDB starts on boot
+  command: chkconfig mongod on
+
+- name: Download and install Ops Manager
+  yum: name=https://downloads.mongodb.com/on-prem-mms/rpm/mongodb-mms-2.0.6.363-1.x86_64.rpm state=present
+
+- name: Configure Ops Manager
+  copy: src=conf-mms.properties dest=/opt/mongodb/mms/conf/conf-mms.properties force=yes
+
+- name: Start Ops Manager
+  service: name=mongodb-mms state=started
+
