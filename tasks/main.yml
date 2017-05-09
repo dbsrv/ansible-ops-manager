@@ -1,10 +1,16 @@
 ---
 
+- name: Optimize Linux for MongoDB
+  include: system_optimization.yml
+
 - name: Install MongoDB pt.1 - create repo file
   copy: src=mongodb-enterprise.repo dest=/etc/yum.repos.d/mongodb-enterprise.repo
 
 - name: Install MongoDB pt.2 - install MongoDB packages
   yum: name=mongodb-enterprise state=present
+
+- name: Configure mongod.conf
+  copy: src=mongod.conf dest=/etc/mongod.conf force=yes
 
 - name: Start MongoDB
   service: name=mongod state=started
