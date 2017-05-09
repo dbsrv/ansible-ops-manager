@@ -36,6 +36,9 @@
 - name: Mongorestore initial setup pt.2
   command: mongorestore /tmp/dump
 
+- name: Mongorestore initial setup pt.2
+  copy: src=gen.key dest=/etc/mongodb-mms/gen.key owner=mongodb-mms group=mongodb-mms mode=0600
+
 - name: Start Ops Manager
   service: name=mongodb-mms state=started
 
