@@ -30,6 +30,12 @@
 - name: Configure Ops Manager
   copy: src=conf-mms.properties dest=/opt/mongodb/mms/conf/conf-mms.properties force=yes
 
+- name: Mongorestore initial setup pt.1
+  unarchive: src=dump.zip dest=/tmp
+
+- name: Mongorestore initial setup pt.2
+  command: mongorestore /tmp/dump
+
 - name: Start Ops Manager
   service: name=mongodb-mms state=started
 
