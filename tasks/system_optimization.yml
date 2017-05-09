@@ -1,0 +1,78 @@
+---
+
+# Add hosts info to host file
+- name: Add hosts info to /etc/hosts
+  lineinfile:
+    dest: /etc/hosts
+    line: "{{ hostvars[item].ansible_default_ipv4.address }}\t{{ hostvars[item].ansible_hostname }}\t{{ hostvars[item].ansible_nodename }}"
+  with_items:
+    - "{{ ansible_play_hosts|default([]) }}"
+
+# Reference:
+# https://docs.mongodb.com/manual/administration/production-checklist-operations/#operating-system-configuration
+
+# Use NTP to synchronize the clocks on all components (sharded cluster specific), Amazon Linux runs NTP by default
+
+
+# Disable THP (Transparent Huage Pages)
+# https://docs.mongodb.com/manual/tutorial/transparent-huge-pages/
+- name: Disable transparent huagepages
+  shell: >
+    echo 'never' | tee /sys/kernel/mm/transparent_hugepage/enabled &&
+    echo 'never' | tee /sys/kernel/mm/transparent_hugepage/defrag
+
+- name: Persist thp disabled at boot
+  shell: >
+    echo "echo 'never' | tee /sys/kernel/mm/transparent_hugepage/enabled" | tee -a /etc/rc.local &&
+    echo "echo 'never' | tee /sys/kernel/mm/transparent_hugepage/defrag" | tee -a /etc/rc.local
+
+
+# Adjust readahead settings
+
+
+# Disable 'tuned' tool
+
+
+# Use 'noop' or 'deadline' disk schedulers for SSD drives
+
+
+# Disable NUMA if running on physicals
+
+
+# Raise mongod ulimit
+# https://docs.mongodb.com/manual/reference/ulimit/
+- name: Copy ulimit config file to /etc/security/limits.d/
+  copy: src=99-mongodb-nproc.conf dest=/etc/security/limits.d/99-mongodb-nproc.conf
+
+
+# Use 'noatime' for dbPath mount point
+# https://www.howtoforge.com/reducing-disk-io-by-mounting-partitions-with-noatime
+
+
+# Configure sufficient file handles, kernel pid limit, and max threads/process
+- name: Configure sufficient file handles (98000)
+  shell: echo 98000 | tee /proc/sys/fs/file-max
+
+- name: Configure sufficient kernel pid limit (64000)
+  shell: echo 64000 | tee /proc/sys/kernel/pid_max
+
+- name: Configure sufficient max threads per process (64000)
+  shell: echo 64000 | tee /proc/sys/kernel/threads-max
+
+- name: Persist fs.file-max, kernel.pid_max, kernel.threads-max on reboot
+  shell: >
+    echo "fs.file-max = 98000" | tee -a /etc/sysctl.conf &&
+    echo "kernel.pid_max = 64000" | tee -a /etc/sysctl.conf &&
+    echo "kernel.threads-max = 64000" | tee -a /etc/sysctl.conf
+    
+
+# Ensure system has swap space configured
+
+
+# Ensure system default TCP keepalive is set to 120
+# https://docs.mongodb.com/manual/faq/diagnostics/#faq-keepalive
+- name: Set TCP keepalive (120 seconds)
+  shell: echo 300 | tee /proc/sys/net/ipv4/tcp_keepalive_time
+
+- name: Persist TCP keepalive setting on reboot
+  shell: echo "net.ipv4.tcp_keepalive_time = 300" | tee -a /etc/sysctl.conf
