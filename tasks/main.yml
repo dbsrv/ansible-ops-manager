@@ -12,6 +12,12 @@
 - name: Configure mongod.conf
   copy: src=mongod.conf dest=/etc/mongod.conf force=yes
 
+- name: Create data directory
+  file: state=directory recurse=yes dest=/data/opsmanager/data owner=mongod group=mongod mode=0755
+
+- name: Create log directory
+  file: state=directory recurse=yes dest=/data/opsmanager/log owner=mongod group=mongod mode=0755
+
 - name: Start MongoDB
   service: name=mongod state=started
 
