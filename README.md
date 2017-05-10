@@ -1,2 +1,5 @@
 # ansible-ops-manager
-Ansible play to install MongoDB Ops Manager
+Ansible role to install MongoDB Ops Manager
+
+username: opsmanager@expedia.com
+password: 0psmanager!
