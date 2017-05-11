@@ -30,13 +30,16 @@
 - name: Configure Ops Manager
   copy: src=conf-mms.properties dest=/opt/mongodb/mms/conf/conf-mms.properties force=yes
 
-- name: Mongorestore initial setup pt.1
+- name: Mongorestore initial configuration pt.1
   unarchive: src=dump.zip dest=/tmp
 
-- name: Mongorestore initial setup pt.2
+- name: Mongorestore initial configuration pt.2
   command: mongorestore /tmp/dump
 
-- name: Mongorestore initial setup pt.2
+- name: Mongorestore inital configuration pt.3
+  command: mongo --eval "db.getSiblingDB('cloudconf').getCollection('config.appState').update({ '_id': 'AppSettings.Global.mms.centralUrl' }, { 'value': 'http://{{ ansible_default_ipv4.address }}:8080' }, { upsert : true })"
+
+- name: Mongorestore initial configuration pt.4
   copy: src=gen.key dest=/etc/mongodb-mms/gen.key owner=mongodb-mms group=mongodb-mms mode=0600
 
 - name: Start Ops Manager
