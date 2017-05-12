@@ -2,51 +2,66 @@
 
 - name: Optimize Linux for MongoDB
   include: system_optimization.yml
+  tags: [system]
 
 - name: Install MongoDB pt.1 - create repo file
   copy: src=mongodb-enterprise-amazon.repo dest=/etc/yum.repos.d/mongodb-enterprise.repo
   when: ansible_distribution == "Amazon"
+  tags: [mongodb]
 
 - name: Install MongoDB pt.1 - create repo file
   copy: src=mongodb-enterprise-redhat.repo dest=/etc/yum.repos.d/mongodb-enterprise.repo
   when: ansible_distribution == "Centos"
+  tags: [mongodb]
 
 - name: Install MongoDB pt.2 - install MongoDB packages
   yum: name=mongodb-enterprise state=present
+  tags: [mongodb]
 
 - name: Configure mongod.conf
   copy: src=mongod.conf dest=/etc/mongod.conf force=yes
+  tags: [mongodb]
 
 - name: Create data directory
   file: state=directory recurse=yes dest=/data/opsmanager/data owner=mongod group=mongod mode=0755
+  tags: [mongodb]
 
 - name: Create log directory
   file: state=directory recurse=yes dest=/data/opsmanager/log owner=mongod group=mongod mode=0755
+  tags: [mongodb]
 
 - name: Start MongoDB
   service: name=mongod state=started
+  tags: [mongodb]
 
 - name: Ensure MongoDB starts on boot
   command: chkconfig mongod on
+  tags: [mongodb]
 
 - name: Download and install Ops Manager
   yum: name={{ mongodb_ops_manager_binary }} state=present
+  tags: [opsmanager]
 
 - name: Configure Ops Manager pt.1 - configure properties file
   copy: src=conf-mms.properties dest=/opt/mongodb/mms/conf/conf-mms.properties force=yes
+  tags: [opsmanager]
 
 - name: Configure Ops Manager pt.2 - uncompress dump file
   unarchive: src=dump.tar dest=/tmp
+  tags: [opsmanager]
 
 - name: Configure Ops Manager pt.3 - restore from dump
   command: mongorestore /tmp/dump
+  tags: [opsmanager]
 
 - name: Configure Ops Manager pt.4 - configure url
   command: mongo --eval "db.getSiblingDB('cloudconf').getCollection('config.appState').update({'_id':'AppSettings.Global.mms.centralUrl'}, {'value':'http://{{ansible_default_ipv4.address}}:8080'},{upsert:true})"
-
+  tags: [opsmanager]
+  
 - name: Configure Ops Manager pt.5 - copy keyfile
   copy: src=gen.key dest=/etc/mongodb-mms/gen.key owner=mongodb-mms group=mongodb-mms mode=0600
+  tags: [opsmanager]
 
 - name: Start Ops Manager
   service: name=mongodb-mms state=started
-
+  tags: [opsmanager]
