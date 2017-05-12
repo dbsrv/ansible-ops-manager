@@ -35,8 +35,8 @@
 - name: Configure Ops Manager pt.1 - configure properties file
   copy: src=conf-mms.properties dest=/opt/mongodb/mms/conf/conf-mms.properties force=yes
 
-- name: Configure Ops Manager pt.2 - unzip dump file
-  unarchive: src=dump.zip dest=/tmp
+- name: Configure Ops Manager pt.2 - uncompress dump file
+  unarchive: src=dump.tar dest=/tmp
 
 - name: Configure Ops Manager pt.3 - restore from dump
   command: mongorestore /tmp/dump
