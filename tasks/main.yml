@@ -37,7 +37,7 @@
   command: mongorestore /tmp/dump
 
 - name: Mongorestore inital configuration pt.3
-  command: mongo --eval "db.getSiblingDB('cloudconf').getCollection('config.appState').update({ '_id': 'AppSettings.Global.mms.centralUrl' }, { 'value': 'http://{{ ansible_default_ipv4.address }}:8080' }, { upsert : true })"
+  command: mongo --eval "db.getSiblingDB('cloudconf').getCollection('config.appState').update({'_id':'AppSettings.Global.mms.centralUrl'}, {'value':'http://{{ansible_default_ipv4.address}}:8080'},{upsert:true})"
 
 - name: Mongorestore initial configuration pt.4
   copy: src=gen.key dest=/etc/mongodb-mms/gen.key owner=mongodb-mms group=mongodb-mms mode=0600
