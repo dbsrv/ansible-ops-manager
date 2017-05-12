@@ -4,7 +4,12 @@
   include: system_optimization.yml
 
 - name: Install MongoDB pt.1 - create repo file
-  copy: src=mongodb-enterprise.repo dest=/etc/yum.repos.d/mongodb-enterprise.repo
+  copy: src=mongodb-enterprise-amazon.repo dest=/etc/yum.repos.d/mongodb-enterprise.repo
+  when: ansible_distribution == "Amazon"
+
+- name: Install MongoDB pt.1 - create repo file
+  copy: src=mongodb-enterprise-redhat.repo dest=/etc/yum.repos.d/mongodb-enterprise.repo
+  when: ansible_distribution == "Centos"
 
 - name: Install MongoDB pt.2 - install MongoDB packages
   yum: name=mongodb-enterprise state=present
