@@ -6,12 +6,12 @@
 
 - name: Install MongoDB pt.1 - create repo file
   copy: src=mongodb-enterprise-amazon.repo dest=/etc/yum.repos.d/mongodb-enterprise.repo
-  when: ansible_distribution == "Amazon"
+  when: ansible_distribution == 'Amazon'
   tags: [mongodb]
 
 - name: Install MongoDB pt.1 - create repo file
   copy: src=mongodb-enterprise-redhat.repo dest=/etc/yum.repos.d/mongodb-enterprise.repo
-  when: ansible_distribution == "Centos"
+  when: ansible_distribution == 'CentOS'
   tags: [mongodb]
 
 - name: Install MongoDB pt.2 - install MongoDB packages
@@ -29,6 +29,14 @@
 - name: Create log directory
   file: state=directory recurse=yes dest=/data/opsmanager/log owner=mongod group=mongod mode=0755
   tags: [mongodb]
+
+- name: Set SELinux permission for data path
+  shell: chcon -Rv --type=mongod_var_lib_t /data/opsmanager/data
+  when: ansible_distribution == 'CentOS'
+
+- name: Set SELinux permission for log path
+  shell: chcon -Rv --type=mongod_log_t /data/opsmanager/log
+  when: ansible_distribution == 'CentOS'
 
 - name: Start MongoDB
   service: name=mongod state=started
