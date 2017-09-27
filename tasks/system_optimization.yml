@@ -72,7 +72,7 @@
 # Ensure system default TCP keepalive is set to 120
 # https://docs.mongodb.com/manual/faq/diagnostics/#faq-keepalive
 - name: Set TCP keepalive (120 seconds)
-  shell: echo 300 | tee /proc/sys/net/ipv4/tcp_keepalive_time
+  shell: echo 120 | tee /proc/sys/net/ipv4/tcp_keepalive_time
 
 - name: Persist TCP keepalive setting on reboot
-  shell: echo "net.ipv4.tcp_keepalive_time = 300" | tee -a /etc/sysctl.conf
+  shell: echo "net.ipv4.tcp_keepalive_time = 120" | tee -a /etc/sysctl.conf
