@@ -73,3 +73,7 @@
 - name: Start Ops Manager
   service: name=mongodb-mms state=started
   tags: [opsmanager]
+  
+- name: Ensure Ops Manager starts on boot
+  command: chkconfig mongodb-mms on
+  tags: [opsmanager]
