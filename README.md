@@ -1,9 +1,9 @@
 # ansible-ops-manager
-Ansible role to install MongoDB Ops Manager. \n
+Ansible role to install MongoDB Ops Manager __
 This will run a standalone mongod as application database. Then download, install, and configure Ops Manager.
 
 ### Access
-Username: opsmanager@expedia.com
+Username: opsmanager@expedia.com __
 Password: <contact holee@expedia.com>
 
 ### Example play
