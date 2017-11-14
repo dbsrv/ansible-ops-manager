@@ -4,12 +4,12 @@
   include: system_optimization.yml
   tags: [system]
 
-- name: Install MongoDB pt.1 - create repo file
+- name: Install MongoDB pt.1 - create repo file (Amazon Linux)
   copy: src=mongodb-enterprise-amazon.repo dest=/etc/yum.repos.d/mongodb-enterprise.repo
   when: ansible_distribution == 'Amazon'
   tags: [mongodb]
 
-- name: Install MongoDB pt.1 - create repo file
+- name: Install MongoDB pt.1 - create repo file (CentOS)
   copy: src=mongodb-enterprise-redhat.repo dest=/etc/yum.repos.d/mongodb-enterprise.repo
   when: ansible_distribution == 'CentOS'
   tags: [mongodb]
