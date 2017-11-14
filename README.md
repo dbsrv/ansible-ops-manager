@@ -1,5 +1,5 @@
 # ansible-ops-manager
-Ansible role to install MongoDB Ops Manager __
+Ansible role to install MongoDB Ops Manager__
 This will run a standalone mongod as application database. Then download, install, and configure Ops Manager.
 
 ### Access
